@@ -2,7 +2,9 @@
 use local_config::*;
 
 #[test]
-fn can_create_a_config_file() {
-  let conf = local_config::ConfigFile::from("Test").unwrap();
-  assert_eq!(conf.get_notification_email(), "test@test.org");
+fn get_an_error_when_file_does_not_exist() {
+  if let Ok(_) = ConfigFile::from("thisdoesnotexist.ini") {
+    panic!("Creating a ConfigFile struct with a file 
+      that does not exist did not result in an error");
+  }
 }
