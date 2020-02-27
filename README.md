@@ -20,3 +20,6 @@ I think people write a lib.rs file to centralize everything to be used by main.r
 * Parsing x509 certs using OpenSSL: https://docs.rs/openssl/0.9.14/openssl/x509/struct.X509.html
 
 I should use one for command line arguments but I figured I'd learn more things by doing it from scratch.
+
+# TODO
+- [ ] Test the paths on Windows
