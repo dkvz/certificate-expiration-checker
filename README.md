@@ -39,6 +39,7 @@ I think people write a lib.rs file to centralize everything to be used by main.r
 * Parsing x509 certs using OpenSSL: https://docs.rs/openssl/0.9.14/openssl/x509/struct.X509.html
   * I'm not going to use OpenSSL, it either requries compiling the entire lib with the Rust program or linking to a system lib which I'd rather avoid.
 * Parsing x509 in "pem" format: https://docs.rs/x509-parser/0.6.2/x509_parser/pem/index.html
+  * Using version 0.6 of x509_parser creates an infinite loop. Yeah.
 
 I should use one for command line arguments but I figured I'd learn more things by doing it from scratch.
 
@@ -49,3 +50,4 @@ The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2
 - [ ] What happens if there's more than one cert in a file?
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
 - [ ] I've seen something like #[cfg(test)] or something, what is that?
+- [ ] Add documentation in code - With "doc tests"

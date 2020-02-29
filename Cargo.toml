@@ -8,5 +8,5 @@ edition = "2018"
 
 [dependencies]
 config = "0.10.1"
-x509-parser = "0.6.2"
+x509-parser = "0.5.1"
 time = "0.2.7"
