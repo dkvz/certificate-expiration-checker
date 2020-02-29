@@ -22,9 +22,10 @@ Example:
 
 ## The general idea
 Provide a config file with:
-- A notification email address
+- A notification email address (optional)
 - A list of certificates to check
   * For the moment: should be a single public key per file
+- An optional amount of days before expiration that warrants notifying the user - Defaults to 30 days if absent or invalid
 
 Config file can be given using the "-f" argument, or the program looks for a default config file in current directory.
 
@@ -51,4 +52,4 @@ The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
 - [ ] I've seen something like #[cfg(test)] or something, what is that?
 - [ ] Add documentation in code - With "doc tests"
-- [ ] Tell the crate authors about the infinite loop issue, I need to reproduce it in a test with a copy paste of the whole code.
+- [x] Tell the crate authors about the infinite loop issue, I need to reproduce it in a test with a copy paste of the whole code.
