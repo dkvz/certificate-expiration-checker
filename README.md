@@ -42,6 +42,8 @@ I think people write a lib.rs file to centralize everything to be used by main.r
 
 I should use one for command line arguments but I figured I'd learn more things by doing it from scratch.
 
+The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2/x509_parser/x509/struct.Validity.html
+
 # TODO
 - [ ] Test the paths on Windows
 - [ ] What happens if there's more than one cert in a file?
