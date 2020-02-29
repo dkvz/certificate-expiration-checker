@@ -13,9 +13,9 @@ certificates = [
   "/etc/ssl/certs/another_one.pem"
 ]
 ```
-The certificates have to hold a single public key
-
 And provide it to the executable using the "-f" flag.
+
+The certificates have to hold a single public key. It will also work when multiple certificates are in a single file, but **only the first one will be checked for validity**.
 
 Example:
 **TODO**
@@ -51,3 +51,4 @@ The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
 - [ ] I've seen something like #[cfg(test)] or something, what is that?
 - [ ] Add documentation in code - With "doc tests"
+- [ ] Tell the crate authors about the infinite loop issue, I need to reproduce it in a test with a copy paste of the whole code.
