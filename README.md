@@ -46,3 +46,4 @@ I should use one for command line arguments but I figured I'd learn more things 
 - [ ] Test the paths on Windows
 - [ ] What happens if there's more than one cert in a file?
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
+- [ ] I've seen something like #[cfg(test)] or something, what is that?
