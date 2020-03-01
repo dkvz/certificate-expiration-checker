@@ -40,7 +40,6 @@ fn default_min_days_is_30() {
   match ConfigFile::from("tests/fixtures/empty.toml") {
     Ok(config) => {
       assert_eq!(*config.get_alert_min_days(), 30);
-      assert_eq!(config.get_alert_min_days_in_secs(), 2592000);
     },
     Err(e) => panic!("Error reading fixture file: {}", e)
   }

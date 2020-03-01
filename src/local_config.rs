@@ -73,9 +73,9 @@ impl ConfigFile {
     &self.alert_min_days
   }
 
-  pub fn get_alert_min_days_in_secs(&self) -> i64 {
+  pub fn get_max_timestamp(&self, now: i64) -> i64 {
     // Timestamps from the Time crate seem to be i64.
-    (self.alert_min_days as i64) * 86400
+    now + ((self.alert_min_days as i64) * 86400)
   }
 
 }
