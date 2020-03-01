@@ -41,6 +41,7 @@ I think people write a lib.rs file to centralize everything to be used by main.r
   * I'm not going to use OpenSSL, it either requries compiling the entire lib with the Rust program or linking to a system lib which I'd rather avoid.
 * Parsing x509 in "pem" format: https://docs.rs/x509-parser/0.6.2/x509_parser/pem/index.html
   * Using version 0.6 of x509_parser creates an infinite loop. Yeah.
+* Sending emails through SMTP: https://github.com/lettre/lettre
 
 I should use one for command line arguments but I figured I'd learn more things by doing it from scratch.
 
@@ -54,5 +55,7 @@ The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2
 - [ ] Add documentation in code - With "doc tests".
 - [ ] It would be cool to have colors in the final report.
 - [ ] When panic is called, what is the return code from the program? I guess it should also output to stderr but that's not super important.
+- [ ] Add a "-q" flag to remove all output (exit code should still reflect the status though).
+- [ ] Test if the latest version of the x509-parser crate passes the tests with no infinite loop now that they fixed the issue.
 - [x] What happens if there's more than one cert in a file? -> Supposedly reads the first only.
 - [x] Tell the crate authors about the infinite loop issue, I need to reproduce it in a test with a copy paste of the whole code.
