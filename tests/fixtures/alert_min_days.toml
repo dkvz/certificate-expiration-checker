@@ -1,0 +1,5 @@
+alert_min_days = -50
+
+certificates = [
+  "snakeoil.pem"
+]

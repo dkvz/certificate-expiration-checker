@@ -47,9 +47,12 @@ I should use one for command line arguments but I figured I'd learn more things 
 The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2/x509_parser/x509/struct.Validity.html
 
 # TODO
-- [ ] Test the paths on Windows
-- [ ] What happens if there's more than one cert in a file?
+- [ ] Test the paths on Windows.
+- [ ] Try reading something that we shouldn't parse, like a private key I could generate with OpenSSL.
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
 - [ ] I've seen something like #[cfg(test)] or something, what is that?
-- [ ] Add documentation in code - With "doc tests"
+- [ ] Add documentation in code - With "doc tests".
+- [ ] It would be cool to have colors in the final report.
+- [ ] When panic is called, what is the return code from the program? I guess it should also output to stderr but that's not super important.
+- [x] What happens if there's more than one cert in a file? -> Supposedly reads the first only.
 - [x] Tell the crate authors about the infinite loop issue, I need to reproduce it in a test with a copy paste of the whole code.

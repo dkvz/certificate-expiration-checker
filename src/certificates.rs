@@ -2,6 +2,8 @@ use std::io;
 use std::io::Cursor;
 use std::io::Read;
 use std::fs::File;
+use std::fmt;
+use std::fmt::{Display, Formatter};
 // A crate I use:
 extern crate x509_parser;
 use x509_parser::pem::Pem;
@@ -23,6 +25,17 @@ impl From<io::Error> for CertReadError {
 impl From<PEMError> for CertReadError {
   fn from(_: PEMError) -> Self {
     CertReadError::PEMError
+  }
+}
+
+impl Display for CertReadError {
+  fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+    let desc = match self {
+      CertReadError::IOError(err) => format!("Error: IO - {}", err),
+      CertReadError::PEMError => String::from("Error: file is using the PEM format"),
+      CertReadError::CertParseError => String::from("Error: could not parse certificate data")
+    };
+    write!(f, "{}", desc)
   }
 }
 

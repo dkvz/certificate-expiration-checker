@@ -8,9 +8,11 @@ use config::*;
 
 // Unless we put "pub" in front of 
 // fields we need accessor functions.
+#[derive(Debug)]
 pub struct ConfigFile {
   notification_email: Option<String>,
-  certificates: Vec<String>
+  certificates: Vec<String>,
+  alert_min_days: u32
 }
 
 impl ConfigFile {
@@ -32,6 +34,7 @@ impl ConfigFile {
       Err(_) => Vec::new()
     };*/
     // TODO I HAVE NO IDEA WHY into_iter WORKS BUT NOT iter
+    // Which is probably because I have no idea what "into" does.
     let certs : Vec<String> = match conf.get_array("certificates") {
       Ok(found_certs) => found_certs.into_iter()
         .map(|val| val.into_str()
@@ -40,9 +43,21 @@ impl ConfigFile {
       Err(_) => Vec::new()
     };
 
+    let min_days : u32 = match conf.get_int("alert_min_days") {
+      Ok(days) => {
+        if days < 0 {
+          days.abs() as u32
+        } else {
+          days as u32
+        }
+      },
+      Err(_) => 30
+    };
+
     Ok(ConfigFile {
       notification_email: email,
-      certificates: certs
+      certificates: certs,
+      alert_min_days: min_days
     })
   }
 
@@ -52,6 +67,15 @@ impl ConfigFile {
 
   pub fn get_certificates(&self) -> &Vec<String> {
     &self.certificates
+  }
+
+  pub fn get_alert_min_days(&self) -> &u32 {
+    &self.alert_min_days
+  }
+
+  pub fn get_alert_min_days_in_secs(&self) -> i64 {
+    // Timestamps from the Time crate seem to be i64.
+    (self.alert_min_days as i64) * 86400
   }
 
 }
