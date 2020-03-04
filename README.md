@@ -54,7 +54,8 @@ The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2
 - [ ] I've seen something like #[cfg(test)] or something, what is that?
 - [ ] Add documentation in code - With "doc tests".
 - [ ] It would be cool to have colors in the final report.
-- [ ] When panic is called, what is the return code from the program? I guess it should also output to stderr but that's not super important.
+- [ ] When panic is called, what is the return code from the program?
+- [ ] Check that panic! and expect print to stderr.
 - [ ] Add a "-q" flag to remove all output (exit code should still reflect the status though).
 - [ ] Test if the latest version of the x509-parser crate passes the tests with no infinite loop now that they fixed the issue.
 - [x] What happens if there's more than one cert in a file? -> Supposedly reads the first only.

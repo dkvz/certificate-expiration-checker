@@ -3,7 +3,7 @@ mod local_config;
 use local_config::ConfigFile;
 extern crate chrono;
 use chrono::Utc;
-use certexpchecker::{process_cert};
+use certexpchecker::{ProcessedCert};
 
 fn main() {
   let args: Vec<String> = env::args().collect();
@@ -29,10 +29,28 @@ fn main() {
   // Iterate and check each certificate.
   // The logic should probably be in a module.
   //println!("Certs found in the config file: {:?}", config.get_certificates());
-  println!("Results:");
-  config
+  //println!("Results:");
+  let processed_certs: Vec<ProcessedCert> = config
     .get_certificates()
     .iter()
-    .for_each(|path| process_cert(path, max_ts));
+    .map(|path| ProcessedCert::new(path, max_ts))
+    .collect();
+
+  if !args.contains(&"-q".to_string()) {
+    println!("Results:");
+    for cert in &processed_certs {
+      println!("\t- {}", cert);
+    }
+  }
+  
+  let alert_certs: Vec<ProcessedCert> = processed_certs
+    .into_iter()
+    .filter(|cert| cert.is_alert_status())
+    .collect();
+  
+  println!("\n{} certificates expiring soon.", alert_certs.len());
+
+  // If alert_certs is not empty, return exit code 2.
+  // Check that panic returns 1.
 
 }
