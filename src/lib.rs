@@ -5,6 +5,11 @@ use chrono::{TimeZone, Utc};
 mod certificates;
 use certificates::*;
 
+fn format_timestamp(ts: i64) -> String {
+  let dt = Utc.timestamp(ts, 0);
+  dt.to_string()
+}
+
 pub enum CertStatus {
   Error,
   Valid,
@@ -68,11 +73,6 @@ impl<'a> Display for ProcessedCert<'a> {
     };
     write!(f, "{} - {} - {}", self.path, status_desc, self.description)
   }
-}
-
-fn format_timestamp(ts: i64) -> String {
-  let dt = Utc.timestamp(ts, 0);
-  dt.to_string()
 }
 
 /*

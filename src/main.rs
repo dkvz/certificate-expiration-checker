@@ -1,4 +1,5 @@
 use std::env;
+use std::process;
 mod local_config;
 use local_config::ConfigFile;
 extern crate chrono;
@@ -47,10 +48,12 @@ fn main() {
     .into_iter()
     .filter(|cert| cert.is_alert_status())
     .collect();
-  
-  println!("\n{} certificates expiring soon.", alert_certs.len());
 
   // If alert_certs is not empty, return exit code 2.
-  // Check that panic returns 1.
+  // Check that panic returns 1 with the built executable.
+  
+  if !alert_certs.is_empty() {
+    process::exit(2);
+  }
 
 }
