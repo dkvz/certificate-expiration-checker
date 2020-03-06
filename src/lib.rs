@@ -4,6 +4,8 @@ extern crate chrono;
 use chrono::{TimeZone, Utc};
 mod certificates;
 use certificates::*;
+extern crate colored;
+use colored::*;
 
 fn format_timestamp(ts: i64) -> String {
   let dt = Utc.timestamp(ts, 0);
@@ -67,11 +69,11 @@ impl<'a> ProcessedCert<'a> {
 impl<'a> Display for ProcessedCert<'a> {
   fn fmt(&self, f: &mut Formatter) -> fmt::Result {
     let status_desc = match self.status {
-      CertStatus::Error => "Error",
-      CertStatus::Valid => "Valid",
-      CertStatus::Alert => "Alert"
+      CertStatus::Error => "Error".red(),
+      CertStatus::Valid => "Valid".green(),
+      CertStatus::Alert => "Alert".yellow()
     };
-    write!(f, "{} - {} - {}", self.path, status_desc, self.description)
+    write!(f, "{} - {} - {}", self.path.bold(), status_desc, self.description)
   }
 }
 

@@ -42,6 +42,7 @@ I think people write a lib.rs file to centralize everything to be used by main.r
 * Parsing x509 in "pem" format: https://docs.rs/x509-parser/0.6.2/x509_parser/pem/index.html
   * Using version 0.6 of x509_parser creates an infinite loop. Yeah.
 * Sending emails through SMTP: https://github.com/lettre/lettre
+* Colored terminal: https://github.com/mackwic/colored
 
 I should use one for command line arguments but I figured I'd learn more things by doing it from scratch.
 
