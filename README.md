@@ -52,12 +52,13 @@ I'm using the "chrono" crate for dates and times parsing and creating from times
 
 # TODO
 - [ ] In main.rs, all the logic starting from `let max_ts` should be moved to lib.rs under a function named "run".
+- [ ] I've been reading extern crate is no longer needed, is that true?
 - [ ] Test the paths on Windows.
 - [ ] Try reading something that we shouldn't parse, like a private key I could generate with OpenSSL.
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
 - [ ] Add tests for lib.rs.
 - [ ] Add documentation in code - With "doc tests".
-- [ ] It would be cool to have colors in the final report.
+- [x] It would be cool to have colors in the final report.
 - [ ] When panic is called, what is the return code from the program? Check with built executable too.
 - [ ] Test if the latest version of the x509-parser crate passes the tests with no infinite loop now that they fixed the issue.
 - [x] Add a "-q" flag to remove all output (exit code should still reflect the status though).
