@@ -1,0 +1,9 @@
+notification_email = "root@localhost"
+from_email = "certalert@my-machine.local"
+
+certificates = [
+  "tests/fixtures/snakeoil.pem",
+  "tests/fixtures/expired.pem",
+  "tests/fixtures/rapidssl_intermediate.crt",
+  "tests/fixtures/does_not_exist.pem"
+]

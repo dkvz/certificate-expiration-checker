@@ -1,0 +1,5 @@
+certificates = [
+  "tests/fixtures/snakeoil.pem",
+  "tests/fixtures/expired.pem",
+  "tests/fixtures/rapidssl_intermediate.crt"
+]

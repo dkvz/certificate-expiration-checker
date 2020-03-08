@@ -51,7 +51,22 @@ The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2
 
 I'm using the "chrono" crate for dates and times parsing and creating from timestamps.
 
+## Resources
+Site with all sorts of certificates: https://badssl.com
+
+Exporting public HTTP certs as PEM:
+```
+echo | openssl s_client -servername NAME -connect HOST:PORT |\
+  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > certificate.crt
+```
+
+To get my example expired cert (in tests/fixtures):
+```
+echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > certificate.crt
+```
+
 # TODO
+- [ ] I could add an "Expired" certificate status. Alert currently also applies for expired, which is a little weird.
 - [ ] In main.rs, all the logic starting from `let max_ts` should be moved to lib.rs under a function named "run".
 - [ ] I've been reading extern crate is no longer needed, is that true?
 - [ ] Check and document the rust autoformat tool, I think there's something available through cargo install or component add or something.
@@ -62,6 +77,7 @@ I'm using the "chrono" crate for dates and times parsing and creating from times
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
 - [ ] Add tests for lib.rs.
 - [ ] Add documentation in code - With "doc tests".
+- [ ] Is it common place to return &String from functions?
 - [x] It would be cool to have colors in the final report.
 - [ ] When panic is called, what is the return code from the program? Check with built executable too.
 - [ ] Test if the latest version of the x509-parser crate passes the tests with no infinite loop now that they fixed the issue.

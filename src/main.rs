@@ -5,9 +5,12 @@ use local_config::ConfigFile;
 extern crate chrono;
 use chrono::Utc;
 use certexpchecker::{ProcessedCert};
+mod notifications;
+use notifications::send_email_notification;
 
 fn main() {
-  let args: Vec<String> = env::args().collect();
+  // Collect command line args but skip the first one:
+  let args: Vec<String> = env::args().skip(1).collect();
 
   let pos = args.iter().position(|i| i == "-f")
     .expect("Please provide a config file with the -f option");
@@ -15,7 +18,7 @@ fn main() {
   let filename = args.get(pos + 1)
     .expect("Please provide a filename for the config file");
 
-  // We could match errors to give a more useful message here:
+  // TODO We could match errors to give a more useful message here:
   let config = ConfigFile::from(filename)
     .expect("Error reading the config file - Make sure it exists and is readable");
 
@@ -28,9 +31,6 @@ fn main() {
   let max_ts = config.get_max_timestamp(Utc::now().timestamp());
 
   // Iterate and check each certificate.
-  // The logic should probably be in a module.
-  //println!("Certs found in the config file: {:?}", config.get_certificates());
-  //println!("Results:");
   let processed_certs: Vec<ProcessedCert> = config
     .get_certificates()
     .iter()
@@ -40,7 +40,7 @@ fn main() {
   if !args.contains(&"-q".to_string()) {
     println!("Results:");
     for cert in &processed_certs {
-      println!("\t- {}", cert);
+      println!("\t- {}", cert.to_colored_string());
     }
   }
   
@@ -53,6 +53,17 @@ fn main() {
   // Check that panic returns 1 with the built executable.
   
   if !alert_certs.is_empty() {
+    // Check if we have a notification email set:
+    if let Some(dest_email) = config.get_notification_email() {
+      match send_email_notification(
+        config.get_from_email(), 
+        dest_email, 
+        &alert_certs
+      ) {
+        Err(error) => panic!("Error sending the notification email: {}", error),
+        _ => ()
+      }
+    }
     process::exit(2);
   }
 
