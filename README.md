@@ -53,6 +53,8 @@ I'm using the "chrono" crate for dates and times parsing and creating from times
 # TODO
 - [ ] In main.rs, all the logic starting from `let max_ts` should be moved to lib.rs under a function named "run".
 - [ ] I've been reading extern crate is no longer needed, is that true?
+- [ ] Check and document the rust autoformat tool, I think there's something available through cargo install or component add or something.
+- [ ] In main.rs I think I should use crate::{ProcessedCert} - To check.
 - [ ] Test the paths on Windows.
 - [ ] Try reading something that we shouldn't parse, like a private key I could generate with OpenSSL.
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?

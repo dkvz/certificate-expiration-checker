@@ -6,6 +6,8 @@ mod certificates;
 use certificates::*;
 extern crate colored;
 use colored::*;
+mod notifications;
+use notifications::send_email_notification;
 
 fn format_timestamp(ts: i64) -> String {
   let dt = Utc.timestamp(ts, 0);

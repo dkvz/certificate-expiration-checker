@@ -1,30 +1,19 @@
 use std::error::Error;
-use certexpchecker::{ProcessedCert};
+use crate::{ProcessedCert};
 extern crate lettre;
 extern crate lettre_email;
-use lettre_email::{Email};
-use lettre::{SendableEmail, EmailAddress, Transport, Envelope, SmtpClient};
-
-
-// Let's implement the custom aggregate error as a struct this time.
-// TODO Check how they do this in other projects.
-
-
-
-// TODO Add tests for the private method to build email directly
-// inside of this file with the cfg tests thingy.
-
+use lettre_email::{Email, Mailbox};
+use lettre::{Transport, SmtpClient};
 
 pub fn send_email_notification(from: &String, dest: &String, certs: &Vec<ProcessedCert>) 
   -> Result<(), Box<dyn Error>> {
-    // Can we use fold to create the body from the certs vector?
     let mut content = String::from("Some certificates approach expiration:\r\n");
     let more_content = certs
       .iter()
       .map(|cert| format!("{}", cert))
-      .collect()
+      .collect::<Vec<String>>()
       .join("\r\n");
-    content.push_str(more_content);
+    content.push_str(&more_content);
 
     /*let email = SendableEmail::new(
       Envelope::new(
@@ -34,21 +23,21 @@ pub fn send_email_notification(from: &String, dest: &String, certs: &Vec<Process
       "id".to_string(),
       content.into_bytes(),
     );*/
-    let email = build_email(from, dest, content)?;
+    let email = build_email(from, dest, &content)?;
 
     let mut mailer =
       SmtpClient::new_unencrypted_localhost()?.transport();
     // Send the email
-    mailer.send(email)?;
+    mailer.send(email.into())?;
     
     Ok(())
   }
 
 fn build_email(from: &String, dest: &String, content: &String) 
   -> Result<Email, Box<dyn Error>> {
-    // TODO Check what errors these are returning:
-    let from = EmailAddress::new(from)?;
-    let dest = EmailAddress::new(dest)?;
+    // Error type is in lettre:Error:Error;
+    let from = Mailbox::new(from.clone());
+    let dest = Mailbox::new(dest.clone());
     let email = Email::builder()
       // Addresses can be specified by the tuple (email, alias)
       .to(dest)
@@ -57,6 +46,41 @@ fn build_email(from: &String, dest: &String, content: &String)
       .text(content)
       .build();
 
-      // TODO We should check email.is_ok()
-      email
+    // We could check email.is_ok().
+    // Not going to do it here.
+    Ok(email?)
   }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn can_build_email() {
+      match build_email(
+        &String::from("valid@valid.com"), 
+        &String::from("destination@valid.org"), 
+        &String::from("Text content")
+      ) {
+        Err(error) => panic!("Error trying to build an email message: {}", error),
+        _ => ()
+      }
+  }
+
+  // TODO
+  // This would be a good use case for parametrized tests.
+  // If I knew how to do them that is.
+
+  #[test]
+  fn build_email_with_invalid_addresses_errors() {
+    match build_email(
+      &String::from("invalid"), 
+      &String::from("pants"), 
+      &String::from("Text content")
+    ) {
+      Ok(_) => panic!("Could build email with invalid email addresses"),
+      _ => ()
+    }
+  }
+
+}
