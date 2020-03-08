@@ -1,5 +1,6 @@
 notification_email = "test@dkvz.eu"
+from_email = "certalert@my-machine.local"
 
 certificates = [
-  "snakeoil.pem"
+  "tests/fixtures/snakeoil.pem"
 ]

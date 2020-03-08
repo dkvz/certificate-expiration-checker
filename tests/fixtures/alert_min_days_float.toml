@@ -1,5 +1,5 @@
 alert_min_days = 30.2
 
 certificates = [
-  "snakeoil.pem"
+  "tests/fixtures/snakeoil.pem"
 ]

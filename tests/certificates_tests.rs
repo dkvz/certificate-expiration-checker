@@ -4,7 +4,7 @@ use certificates::{ get_certificate_expiry_date, CertReadError };
 // Testing with a basic self signed cert from some Linux VM.
 #[test]
 fn can_read_fixture_cert_validity1() {
-  let not_after: i64 = get_certificate_expiry_date("snakeoil.pem")
+  let not_after: i64 = get_certificate_expiry_date("tests/fixtures/snakeoil.pem")
     .expect("Got an error reading the certificate");
   assert_eq!(1864816487, not_after);
 }

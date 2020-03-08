@@ -11,6 +11,7 @@ use config::*;
 #[derive(Debug)]
 pub struct ConfigFile {
   notification_email: Option<String>,
+  from_email: String,
   certificates: Vec<String>,
   alert_min_days: u32
 }
@@ -25,6 +26,11 @@ impl ConfigFile {
     let email : Option<String> = match conf.get_str("notification_email") {
       Ok(e) => Some(e),
       Err(_) => None
+    };
+
+    let from_email = match conf.get_str("from_email") {
+      Ok(m) => m,
+      Err(_) => String::from("nobody@localhost")
     };
     /*let certs : Vec<String> = match conf.get_array("certificates") {
       Ok(found_certs) => found_certs.iter()
@@ -56,6 +62,7 @@ impl ConfigFile {
 
     Ok(ConfigFile {
       notification_email: email,
+      from_email: from_email,
       certificates: certs,
       alert_min_days: min_days
     })
@@ -63,6 +70,10 @@ impl ConfigFile {
 
   pub fn get_notification_email(&self) -> &Option<String> {
     &self.notification_email
+  }
+
+  pub fn get_from_email(&self) -> &String {
+    &self.from_email
   }
 
   pub fn get_certificates(&self) -> &Vec<String> {

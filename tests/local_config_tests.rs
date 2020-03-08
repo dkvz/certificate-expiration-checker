@@ -15,8 +15,9 @@ fn can_read_fixture_email_1_cert() {
     Ok(config) => {
       let email = config.get_notification_email().as_ref().unwrap();
       assert_eq!(email, "test@dkvz.eu");
+      assert_eq!(config.get_from_email(), "certalert@my-machine.local");
       assert_eq!(config.get_certificates().len(), 1);
-      assert_eq!(config.get_certificates()[0], "snakeoil.pem");
+      assert_eq!(config.get_certificates()[0], "tests/fixtures/snakeoil.pem");
     },
     Err(e) => panic!("Error reading fixture file: {}", e)
   }
@@ -60,6 +61,16 @@ fn unparsable_alert_min_days_gets_default_value() {
   match ConfigFile::from("tests/fixtures/alert_min_days_float.toml") {
     Ok(config) => {
       assert_eq!(*config.get_alert_min_days(), 30);
+    },
+    Err(e) => panic!("Error reading fixture file: {}", e)
+  }
+}
+
+#[test]
+fn from_email_has_default_value() {
+  match ConfigFile::from("tests/fixtures/empty.toml") {
+    Ok(config) => {
+      assert_eq!(config.get_from_email(), "nobody@localhost");
     },
     Err(e) => panic!("Error reading fixture file: {}", e)
   }

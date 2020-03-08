@@ -7,6 +7,7 @@ I don't know how to Rust.
 Prepare a toml config file such as:
 ```js
 notification_email = "some_email@email.org"
+from_email = "certalert@my-machine.local"
 
 certificates = [
   "/etc/ssl/certs/snakeoil.pem",
@@ -55,6 +56,7 @@ I'm using the "chrono" crate for dates and times parsing and creating from times
 - [ ] I've been reading extern crate is no longer needed, is that true?
 - [ ] Check and document the rust autoformat tool, I think there's something available through cargo install or component add or something.
 - [ ] In main.rs I think I should use crate::{ProcessedCert} - To check.
+- [ ] The default config value I use should be constants grouped somewhere and also used in equality assertions in tests.
 - [ ] Test the paths on Windows.
 - [ ] Try reading something that we shouldn't parse, like a private key I could generate with OpenSSL.
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
