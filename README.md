@@ -94,6 +94,7 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 ```
 
 # TODO
+- [ ] I found out using panic! is just bad when there is no super specific debugging purpose. I should implement what they did (here)[https://github.com/mattgathu/duma/blob/master/src/main.rs] and return a Result from the run function.
 - [ ] I could add an "Expired" certificate status. Alert currently also applies for expired, which is a little weird.
 - [x] In main.rs, all the logic starting from `let max_ts` should be moved to lib.rs under a function named "run".
 - [ ] I've been reading extern crate is no longer needed, is that true?
@@ -102,6 +103,7 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 - [x] Test the paths on Windows -> Seems to be working.
 - [ ] Try reading something that we shouldn't parse, like a private key I could generate with OpenSSL.
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
+- [ ] Everybody is using a crate called "failure" for errors.
 - [ ] Add tests for lib.rs.
 - [ ] Add documentation in code - With "doc tests".
 - [ ] My way of processing command line args is not great, I could pop the args I already found from the vector.
