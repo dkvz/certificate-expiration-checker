@@ -1,6 +1,5 @@
 use std::fmt;
 use std::fmt::{Display, Formatter};
-use std::process;
 mod notifications;
 use notifications::{send_email_notification, send_test_email};
 mod local_config;
@@ -113,8 +112,28 @@ impl<'a> Display for ProcessedCert<'a> {
   }
 }
 
-pub fn run(args: Vec<String>, config: ConfigFile) {
-    // Check if the "test email" flag is in the args. In which case
+pub fn run(args: Vec<String>) -> Result<i32, String> {
+  let pos = match args.iter().position(|i| i == "-f") {
+    Some(pos) => pos,
+    None => return Err(String::from("Please provide a config file with the -f option"))
+  };
+
+  let filename = match args.get(pos + 1) {
+    Some(filename) => filename,
+    None => return Err(String::from("Please provide a filename for the config file"))
+  };
+
+  // TODO We could match errors to give a more useful message here:
+  let config = match ConfigFile::from(filename) {
+    Ok(config) => config,
+    Err(_) => return Err(String::from("Error reading the config file - Make sure it exists and is readable"))
+  };
+
+  if config.get_certificates().is_empty() {
+    return Err(String::from("The config file contained no certificate file paths to check"));
+  }
+
+  // Check if the "test email" flag is in the args. In which case
   // we send a test email and exit.
   if args.contains(&"-t".to_string()) {
     if let Some(dest_email) = config.get_notification_email() {
@@ -122,12 +141,12 @@ pub fn run(args: Vec<String>, config: ConfigFile) {
       match send_test_email(config.get_from_email(), dest_email) {
         Ok(_) => {
           println!("Test email sent successfully.");
-          process::exit(0);
+          return Ok(0);
         },
-        Err(error) => panic!("Error sending test email: {}", error)
+        Err(error) => return Err(format!("Error sending test email: {}", error))
       }
     } else {
-      panic!("Missing destination_email in config file");
+      return Err(format!("Missing destination_email in config file"));
     }
   }
 
@@ -160,16 +179,20 @@ pub fn run(args: Vec<String>, config: ConfigFile) {
   if !alert_certs.is_empty() {
     // Check if we have a notification email set:
     if let Some(dest_email) = config.get_notification_email() {
-      match send_email_notification(
+      if let Err(error) = send_email_notification(
         config.get_from_email(), 
         dest_email, 
         &alert_certs
       ) {
-        Err(error) => panic!("Error sending the notification email: {}", error),
-        _ => ()
+        return Err(format!("Error sending the notification email: {}", error));
       }
     }
-    process::exit(2);
+    // Always return status 2 if some certificates were in error or alert ot
+    // expired state:
+    Ok(2)
+  } else {
+    // All fine:
+    Ok(0)
   }
 }
 
