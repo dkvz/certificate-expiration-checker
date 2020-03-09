@@ -23,7 +23,8 @@ fn format_timestamp(ts: i64) -> String {
 pub enum CertStatus {
   Error,
   Valid,
-  Alert
+  Alert,
+  Expired
 }
 
 pub struct ProcessedCert<'a> {
@@ -34,14 +35,17 @@ pub struct ProcessedCert<'a> {
 
 impl<'a> ProcessedCert<'a> {
 
-  pub fn new(path: &'a String, max_ts: i64) -> Self {
+  pub fn new(path: &'a String, now: i64, max_ts: i64) -> Self {
     let mut desc: String;
     let status: CertStatus;
     match get_certificate_expiry_date(path) {
       Ok(timestamp) => {
         desc = String::from("cert expires on: ");
         desc.push_str(format_timestamp(timestamp).as_str());
-        if timestamp < max_ts {
+        // max_ts is necessarily bigger than now.
+        if timestamp < now {
+          status = CertStatus::Expired;
+        } else if timestamp < max_ts {
           // Will expire before the treshold.
           // I don't know how to spell threshhold.
           status = CertStatus::Alert;
@@ -68,7 +72,9 @@ impl<'a> ProcessedCert<'a> {
   // Also send the errors / certs we could not read
   pub fn is_alert_status(&self) -> bool {
     match self.status {
-      CertStatus::Alert | CertStatus::Error => true,
+      CertStatus::Alert | 
+      CertStatus::Error | 
+      CertStatus::Expired => true,
       _ => false
     }
   }
@@ -77,16 +83,17 @@ impl<'a> ProcessedCert<'a> {
     match self.status {
       CertStatus::Error => String::from("Error"),
       CertStatus::Valid => String::from("Valid"),
-      CertStatus::Alert => String::from("Alert")
+      CertStatus::Alert => String::from("Alert"),
+      CertStatus::Expired => String::from("Expired")
     }
   }
 
   pub fn colored_status_description(&self) -> String {
     let status = self.status_description();
     match self.status {
-      CertStatus::Error => status.red().to_string(),
+      CertStatus::Error | CertStatus::Expired => status.red().to_string(),
       CertStatus::Valid => status.green().to_string(),
-      CertStatus::Alert => status.yellow().to_string()
+      CertStatus::Alert => status.yellow().to_string(),
     }
   }
 
@@ -112,6 +119,11 @@ impl<'a> Display for ProcessedCert<'a> {
   }
 }
 
+// At some point I had to remove every call to panic! because it's just
+// not suitable to report errors from a CLI utility.
+// My easiest getaway was using String as the error type here.
+// I should have a look at that "failure" crate everybody is using for
+// some reason.
 pub fn run(args: Vec<String>) -> Result<i32, String> {
   let pos = match args.iter().position(|i| i == "-f") {
     Some(pos) => pos,
@@ -152,13 +164,14 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
 
   // Get the timestamp the expiry date should be over to not proc
   // an alert:
-  let max_ts = config.get_max_timestamp(Utc::now().timestamp());
+  let now = Utc::now().timestamp();
+  let max_ts = config.get_max_timestamp(now);
 
   // Iterate and check each certificate.
   let processed_certs: Vec<ProcessedCert> = config
     .get_certificates()
     .iter()
-    .map(|path| ProcessedCert::new(path, max_ts))
+    .map(|path| ProcessedCert::new(path, now, max_ts))
     .collect();
 
   if !args.contains(&"-q".to_string()) {

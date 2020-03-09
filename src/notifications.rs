@@ -8,7 +8,7 @@ use lettre::{Transport, SmtpClient};
 pub fn send_email_notification(
   from: &String, dest: &String, certs: &Vec<ProcessedCert>
 ) -> Result<(), Box<dyn Error>> {
-  let mut content = String::from("Some certificates approach expiration:\r\n---\r\n");
+  let mut content = String::from("Some certificates approach expiration or are expired:\r\n---\r\n");
   let more_content = certs
     .iter()
     .map(|cert| format!("{}", cert))
