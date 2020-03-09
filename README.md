@@ -34,6 +34,21 @@ A good place to put the config file would be:
 You can now schedule the `certexpchecker` executable to run against that config file every tuesday:
 **TODO**
 
+## Building on Linux
+I tried to avoid it but it looks like the email crate requires the dev files for OpenSSL. Oh well...
+
+Managed to compile the release build (`cargo build --release`) on an Ubuntu based distrib but had to install these first:
+```
+apt install libc-dev gcc-multilib libssl-dev
+```
+
+Once the target is compiled you probably want to manually strip the debug symbols:
+```
+strip target/release/certexpchecker
+```
+
+The following article is really interesting when it comes to optimizing the build :https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
+
 ## The general idea
 Provide a config file with:
 - A notification email address (optional)
