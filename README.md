@@ -1,9 +1,8 @@
 # Certificate Expiration Checker
-I don't know how to Rust.
+I don't know how to Rust. Many parts of this project could be improved.
+It works for my baseline requirements.
 
 ## How to use
-**Work in progress**.
-
 Prepare a toml config file such as:
 ```js
 notification_email = "some_email@email.org"
@@ -18,7 +17,21 @@ And provide it to the executable using the "-f" flag.
 
 The certificates have to hold a single public key. It will also work when multiple certificates are in a single file, but **only the first one will be checked for validity**.
 
-Example:
+For the moment we only send notifications through SMTP using localhost unencrypted and unauthenticated standard port 25. To disable notifications just omit the "notification_email" param in your config file.
+
+To check if notifications are working, make sure you have a valid email address in the `notification_email` field of the config file then run the following test command:
+```
+certexpchecker -f <YOUR_CONFIG_FILE> -t
+```
+
+### Example
+Create a config file as shown in the previous section, list all the certificate paths you want to check. You can use relative paths but I recommend sticking to absolute whenever possible.
+
+A good place to put the config file would be:
+  
+  /etc/certexpchecker.toml
+
+You can now schedule the `certexpchecker` executable to run against that config file every tuesday:
 **TODO**
 
 ## The general idea
@@ -70,13 +83,13 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 - [ ] In main.rs, all the logic starting from `let max_ts` should be moved to lib.rs under a function named "run".
 - [ ] I've been reading extern crate is no longer needed, is that true?
 - [ ] Check and document the rust autoformat tool, I think there's something available through cargo install or component add or something.
-- [ ] In main.rs I think I should use crate::{ProcessedCert} - To check.
 - [ ] The default config value I use should be constants grouped somewhere and also used in equality assertions in tests.
-- [ ] Test the paths on Windows.
+- [x] Test the paths on Windows -> Seems to be working.
 - [ ] Try reading something that we shouldn't parse, like a private key I could generate with OpenSSL.
 - [ ] Am I doing things right by using that Box<Error> thing everywhere?
 - [ ] Add tests for lib.rs.
 - [ ] Add documentation in code - With "doc tests".
+- [ ] My way of processing command line args is not great, I could pop the args I already found from the vector.
 - [ ] Is it common place to return &String from functions?
 - [x] It would be cool to have colors in the final report.
 - [ ] When panic is called, what is the return code from the program? Check with built executable too.

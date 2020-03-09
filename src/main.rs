@@ -6,7 +6,7 @@ extern crate chrono;
 use chrono::Utc;
 use certexpchecker::{ProcessedCert};
 mod notifications;
-use notifications::send_email_notification;
+use notifications::{send_email_notification, send_test_email};
 
 fn main() {
   // Collect command line args but skip the first one:
@@ -24,6 +24,23 @@ fn main() {
 
   if config.get_certificates().is_empty() {
     panic!("The config file contained no certificate file paths to check");
+  }
+
+  // Check if the "test email" flag is in the args. In which case
+  // we send a test email and exit.
+  if args.contains(&"-t".to_string()) {
+    if let Some(dest_email) = config.get_notification_email() {
+      println!("Sending test email...");
+      match send_test_email(config.get_from_email(), dest_email) {
+        Ok(_) => {
+          println!("Test email sent successfully.");
+          process::exit(0);
+        },
+        Err(error) => panic!("Error sending test email: {}", error)
+      }
+    } else {
+      panic!("Missing destination_email in config file");
+    }
   }
 
   // Get the timestamp the expiry date should be over to not proc
