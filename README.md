@@ -80,7 +80,7 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 
 # TODO
 - [ ] I could add an "Expired" certificate status. Alert currently also applies for expired, which is a little weird.
-- [ ] In main.rs, all the logic starting from `let max_ts` should be moved to lib.rs under a function named "run".
+- [x] In main.rs, all the logic starting from `let max_ts` should be moved to lib.rs under a function named "run".
 - [ ] I've been reading extern crate is no longer needed, is that true?
 - [ ] Check and document the rust autoformat tool, I think there's something available through cargo install or component add or something.
 - [ ] The default config value I use should be constants grouped somewhere and also used in equality assertions in tests.
