@@ -46,6 +46,7 @@ Once the target is compiled you probably want to manually strip the debug symbol
 ```
 strip target/release/certexpchecker
 ```
+The `ìnstall` also command has a "-s" option that calls strip.
 
 The following article is really interesting when it comes to optimizing the build: https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
 
