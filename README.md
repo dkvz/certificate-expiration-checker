@@ -95,6 +95,7 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 ```
 
 # TODO
+- [ ] Add an extra option to not send email. It's annoying to have to fiddle with the config file.
 - [ ] We currently can't send a test notification email if there aren't any certificates to check in the config. The test does not actually require any and should be allowed.
 - [x] I found out using panic! is just bad when there is no super specific debugging purpose. I should implement what they did (here)[https://github.com/mattgathu/duma/blob/master/src/main.rs] and return a Result from the run function.
 - [ ] I could add an "Expired" certificate status. Alert currently also applies for expired, which is a little weird.
