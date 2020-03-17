@@ -67,6 +67,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "base64"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b41b7ea54a0c9d92199de89e20e58d49f02f8e699814ef3fdf266f6f748d15c7"
+
+[[package]]
 name = "bitflags"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -101,7 +107,7 @@ checksum = "95e28fa049fda1c330bcf9d723be7663a899c4679724b34c81e9f5a326aab8cd"
 
 [[package]]
 name = "certexpchecker"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "colored",
@@ -182,11 +188,11 @@ checksum = "b3a71ab494c0b5b860bdc8407ae08978052417070c2ced38573a9157ad75b8ac"
 
 [[package]]
 name = "der-parser"
-version = "2.1.0"
+version = "3.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3e2240eda75e81eeac4d7e2899f17a8469d877c5e7f694c7801720bb26a019b0"
+checksum = "f51f64dcdf1cdc550d21d73dc959726c7dbeeab4a01481d08084a7736956464e"
 dependencies = [
- "nom 4.2.3",
+ "nom 5.1.1",
  "num-bigint",
  "rusticata-macros",
 ]
@@ -797,11 +803,11 @@ dependencies = [
 
 [[package]]
 name = "rusticata-macros"
-version = "1.1.0"
+version = "2.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe8c976e50876cb3423699b190e799ff4c8a1a4f47dc33f4036dd056c077b7bb"
+checksum = "93cca5a839ae468017da70a202f294e3deeda9e7d98f21b83fc5d23e5163b9df"
 dependencies = [
- "nom 4.2.3",
+ "nom 5.1.1",
 ]
 
 [[package]]
@@ -1051,13 +1057,13 @@ dependencies = [
 
 [[package]]
 name = "x509-parser"
-version = "0.5.1"
+version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f229e801140da8500deb67fcae308657b39577d04b80a57c9479964c54c094d"
+checksum = "99bbe736dd2b422d66e4830f4a06f34387c9814c027efcbda5c2f86463e8e5b0"
 dependencies = [
- "base64 0.10.1",
+ "base64 0.11.0",
  "der-parser",
- "nom 4.2.3",
+ "nom 5.1.1",
  "num-bigint",
  "rusticata-macros",
  "time",

@@ -1,6 +1,6 @@
 [package]
 name = "certexpchecker"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["dkvz <dk@dkvz.eu>"]
 edition = "2018"
 
@@ -12,7 +12,7 @@ panic = 'abort'
 
 [dependencies]
 config = "0.10.1"
-x509-parser = "0.5.1"
+x509-parser = "0.6.5"
 chrono = "0.4"
 colored = "1.9"
 lettre = "0.9"

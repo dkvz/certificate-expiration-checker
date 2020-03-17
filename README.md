@@ -97,9 +97,9 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 # TODO
 - [ ] Add a version string somewhere and a version arg, I'm noticing I don't know what version of the app I have on which server.
 - [ ] Add an extra option to not send email. It's annoying to have to fiddle with the config file.
-- [ ] We currently can't send a test notification email if there aren't any certificates to check in the config. The test does not actually require any and should be allowed.
+- [x] We currently can't send a test notification email if there aren't any certificates to check in the config. The test does not actually require any and should be allowed.
 - [x] I found out using panic! is just bad when there is no super specific debugging purpose. I should implement what they did (here)[https://github.com/mattgathu/duma/blob/master/src/main.rs] and return a Result from the run function.
-- [ ] I could add an "Expired" certificate status. Alert currently also applies for expired, which is a little weird.
+- [x] I could add an "Expired" certificate status. Alert currently also applies for expired, which is a little weird.
 - [x] In main.rs, all the logic starting from `let max_ts` should be moved to lib.rs under a function named "run".
 - [ ] I've been reading extern crate is no longer needed, is that true?
 - [ ] Check and document the rust autoformat tool, I think there's something available through cargo install or component add or something.
@@ -113,8 +113,8 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 - [ ] My way of processing command line args is not great, I could pop the args I already found from the vector.
 - [ ] Is it common place to return &String from functions?
 - [x] It would be cool to have colors in the final report.
-- [ ] When panic is called, what is the return code from the program? Check with built executable too.
-- [ ] Test if the latest version of the x509-parser crate passes the tests with no infinite loop now that they fixed the issue.
+- [x] When panic is called, what is the return code from the program? Check with built executable too. -> I completely removed all the panic! calls.
+- [x] Test if the latest version of the x509-parser crate passes the tests with no infinite loop now that they fixed the issue. -> They did, and it's an issue I posted.
 - [x] Add a "-q" flag to remove all output (exit code should still reflect the status though).
 - [x] Check that panic! and expect print to stderr.
 - [x] What happens if there's more than one cert in a file? -> Supposedly reads the first only.

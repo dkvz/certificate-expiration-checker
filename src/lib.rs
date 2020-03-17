@@ -141,10 +141,6 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
     Err(_) => return Err(String::from("Error reading the config file - Make sure it exists and is readable"))
   };
 
-  if config.get_certificates().is_empty() {
-    return Err(String::from("The config file contained no certificate file paths to check"));
-  }
-
   // Check if the "test email" flag is in the args. In which case
   // we send a test email and exit.
   if args.contains(&"-t".to_string()) {
@@ -160,6 +156,12 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
     } else {
       return Err(format!("Missing destination_email in config file"));
     }
+  }
+
+  // The rest of the program requires certificates to be present
+  // in the config:
+  if config.get_certificates().is_empty() {
+    return Err(String::from("The config file contained no certificate file paths to check"));
   }
 
   // Get the timestamp the expiry date should be over to not proc
