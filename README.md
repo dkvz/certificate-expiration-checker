@@ -80,6 +80,8 @@ The validity date and time are in that struct: https://docs.rs/x509-parser/0.6.2
 
 I'm using the "chrono" crate for dates and times parsing and creating from timestamps.
 
+I copied code to generate the version string from here: https://github.com/BurntSushi/xsv/blob/master/src/util.rs
+
 ## Resources
 Site with all sorts of certificates: https://badssl.com
 
@@ -97,6 +99,7 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 # TODO
 - [ ] Add a version string somewhere and a version arg, I'm noticing I don't know what version of the app I have on which server.
 - [ ] Add an extra option to not send email. It's annoying to have to fiddle with the config file.
+- [ ] My way of processing command line args is horrible, I could pop the args I already found from the vector or better yet just browse the whole list once and set a list of flags, struct or something.
 - [x] We currently can't send a test notification email if there aren't any certificates to check in the config. The test does not actually require any and should be allowed.
 - [x] I found out using panic! is just bad when there is no super specific debugging purpose. I should implement what they did (here)[https://github.com/mattgathu/duma/blob/master/src/main.rs] and return a Result from the run function.
 - [x] I could add an "Expired" certificate status. Alert currently also applies for expired, which is a little weird.
@@ -110,7 +113,6 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 - [ ] Everybody is using a crate called "failure" for errors.
 - [ ] Add tests for lib.rs.
 - [ ] Add documentation in code - With "doc tests".
-- [ ] My way of processing command line args is not great, I could pop the args I already found from the vector.
 - [ ] Is it common place to return &String from functions?
 - [x] It would be cool to have colors in the final report.
 - [x] When panic is called, what is the return code from the program? Check with built executable too. -> I completely removed all the panic! calls.

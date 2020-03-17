@@ -21,7 +21,7 @@ pub fn send_email_notification(
         Some(EmailAddress::new(from)?),
         vec![EmailAddress::new(dest)?],
     )?,
-    "id".to_string(),
+    "id".to_owned(),
     content.into_bytes(),
   );*/
   let email = build_email(from, dest, &content)?;

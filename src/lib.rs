@@ -119,12 +119,33 @@ impl<'a> Display for ProcessedCert<'a> {
   }
 }
 
+// I copy pasted that code from here:
+// https://github.com/BurntSushi/xsv/blob/master/src/util.rs
+pub fn version() -> String {
+  let (maj, min, pat) = (
+    option_env!("CARGO_PKG_VERSION_MAJOR"),
+    option_env!("CARGO_PKG_VERSION_MINOR"),
+    option_env!("CARGO_PKG_VERSION_PATCH"),
+  );
+  match (maj, min, pat) {
+    (Some(maj), Some(min), Some(pat)) =>
+        format!("{}.{}.{}", maj, min, pat),
+    _ => "".to_owned(),
+  }
+}
+
 // At some point I had to remove every call to panic! because it's just
 // not suitable to report errors from a CLI utility.
 // My easiest getaway was using String as the error type here.
 // I should have a look at that "failure" crate everybody is using for
 // some reason.
 pub fn run(args: Vec<String>) -> Result<i32, String> {
+  // Check if the "version" flag is in the args:
+  if args.contains(&"--version".to_owned()) {
+    println!("certexpchecker version {}", version());
+    return Ok(0);
+  }
+
   let pos = match args.iter().position(|i| i == "-f") {
     Some(pos) => pos,
     None => return Err(String::from("Please provide a config file with the -f option"))
@@ -143,7 +164,7 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
 
   // Check if the "test email" flag is in the args. In which case
   // we send a test email and exit.
-  if args.contains(&"-t".to_string()) {
+  if args.contains(&"-t".to_owned()) {
     if let Some(dest_email) = config.get_notification_email() {
       println!("Sending test email...");
       match send_test_email(config.get_from_email(), dest_email) {
