@@ -212,7 +212,7 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
   // If alert_certs is not empty, return exit code 2.
   // Check that panic returns 1 with the built executable.
   
-  if !alert_certs.is_empty() {
+  if !alert_certs.is_empty() && !args.contains(&"-n".to_owned()) {
     // Check if we have a notification email set:
     if let Some(dest_email) = config.get_notification_email() {
       if let Err(error) = send_email_notification(

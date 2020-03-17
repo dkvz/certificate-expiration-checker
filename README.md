@@ -24,6 +24,12 @@ To check if notifications are working, make sure you have a valid email address 
 certexpchecker -f <YOUR_CONFIG_FILE> -t
 ```
 
+### Other options
+Some other args that can be used:
+- `--version` - Shows the version of the executable
+- `-n` - Disables email notification, even if there is a notification_email field in the config file
+- `-q` - Disables all non-error output, exit codes are unchanged
+
 ### Example
 Create a config file as shown in the previous section, list all the certificate paths you want to check. You can use relative paths but I recommend sticking to absolute whenever possible.
 
@@ -46,7 +52,7 @@ Once the target is compiled you probably want to manually strip the debug symbol
 ```
 strip target/release/certexpchecker
 ```
-The `ìnstall` also command has a "-s" option that calls strip.
+The `install` also command has a "-s" option that calls strip.
 
 The following article is really interesting when it comes to optimizing the build: https://lifthrasiir.github.io/rustlog/why-is-a-rust-executable-large.html
 
@@ -97,9 +103,10 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 ```
 
 # TODO
-- [ ] Add a version string somewhere and a version arg, I'm noticing I don't know what version of the app I have on which server.
-- [ ] Add an extra option to not send email. It's annoying to have to fiddle with the config file.
+- [x] Add a version string somewhere and a version arg, I'm noticing I don't know what version of the app I have on which server.
+- [x] Add an extra option to not send email. It's annoying to have to fiddle with the config file.
 - [ ] My way of processing command line args is horrible, I could pop the args I already found from the vector or better yet just browse the whole list once and set a list of flags, struct or something.
+- [ ] Add a description/usage and related help arg - Could be linked to the previous point.
 - [x] We currently can't send a test notification email if there aren't any certificates to check in the config. The test does not actually require any and should be allowed.
 - [x] I found out using panic! is just bad when there is no super specific debugging purpose. I should implement what they did (here)[https://github.com/mattgathu/duma/blob/master/src/main.rs] and return a Result from the run function.
 - [x] I could add an "Expired" certificate status. Alert currently also applies for expired, which is a little weird.
