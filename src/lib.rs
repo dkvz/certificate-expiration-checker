@@ -10,6 +10,8 @@ mod certificates;
 use certificates::*;
 extern crate colored;
 use colored::*;
+extern crate getopts;
+use getopts::{Options, Fail};
 
 // I need the re-export or I have a strange type 
 // mismatch in main.rs.
@@ -134,37 +136,76 @@ pub fn version() -> String {
   }
 }
 
+fn usage(opts: &Options) -> String {
+  opts.usage("certexpchecker -f FILENAME [options]")
+}
+
 // At some point I had to remove every call to panic! because it's just
 // not suitable to report errors from a CLI utility.
 // My easiest getaway was using String as the error type here.
 // I should have a look at that "failure" crate everybody is using for
 // some reason.
 pub fn run(args: Vec<String>) -> Result<i32, String> {
+  // Using the getopts crate for simple argument parsing:
+  let mut opts = Options::new();
+  opts.optopt("f", "", "Set config filename", "FILENAME");
+  opts.optflag("q", "quiet", "Disables all output");
+  opts.optflag("t", "", "Test email notifications");
+  opts.optflag("n", "", "Don't send email notifications");
+  opts.optflag("V", "version", "Show program version");
+  opts.optflag("h", "help", "Show basic usage");
+
+  // Parsing the option can create a variety of errors that
+  // will exit this method immediately.
+  // We don't try for the OptionMissing since everything is
+  // optional.
+  let opt_matches = opts.parse(args)
+    .map_err(
+      |err| match err {
+        Fail::ArgumentMissing(_) => 
+          usage(&opts),
+        Fail::OptionDuplicated(dup) =>
+          format!("Please remove the duplicated option {}", dup),
+        _ => "Error: Unknown argument".to_owned()
+      }
+    )?;
+
   // Check if the "version" flag is in the args:
-  if args.contains(&"--version".to_owned()) {
+  if opt_matches.opt_present("V") {
     println!("certexpchecker version {}", version());
     return Ok(0);
   }
 
-  let pos = match args.iter().position(|i| i == "-f") {
+  // Now check if we need to print usage:
+  if opt_matches.opt_present("h") {
+    println!("{}", usage(&opts));
+    return Ok(0);
+  }
+
+  /*let pos = match args.iter().position(|i| i == "-f") {
     Some(pos) => pos,
     None => return Err(String::from("Please provide a config file with the -f option"))
   };
-
   let filename = match args.get(pos + 1) {
+    Some(filename) => filename,
+    None => return Err(String::from("Please provide a filename for the config file"))
+  };*/
+  // This should never use the unwrap_or as the option is 
+  // marked as required.
+  let filename = match opt_matches.opt_str("f") {
     Some(filename) => filename,
     None => return Err(String::from("Please provide a filename for the config file"))
   };
 
   // TODO We could match errors to give a more useful message here:
-  let config = match ConfigFile::from(filename) {
+  let config = match ConfigFile::from(&filename) {
     Ok(config) => config,
     Err(_) => return Err(String::from("Error reading the config file - Make sure it exists and is readable"))
   };
 
   // Check if the "test email" flag is in the args. In which case
   // we send a test email and exit.
-  if args.contains(&"-t".to_owned()) {
+  if opt_matches.opt_present("t") {
     if let Some(dest_email) = config.get_notification_email() {
       println!("Sending test email...");
       match send_test_email(config.get_from_email(), dest_email) {
@@ -197,7 +238,7 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
     .map(|path| ProcessedCert::new(path, now, max_ts))
     .collect();
 
-  if !args.contains(&"-q".to_string()) {
+  if !opt_matches.opt_present("q") {
     println!("Results:");
     for cert in &processed_certs {
       println!("\t- {}", cert.to_colored_string());
@@ -212,7 +253,7 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
   // If alert_certs is not empty, return exit code 2.
   // Check that panic returns 1 with the built executable.
   
-  if !alert_certs.is_empty() && !args.contains(&"-n".to_owned()) {
+  if !alert_certs.is_empty() && !opt_matches.opt_present("n") {
     // Check if we have a notification email set:
     if let Some(dest_email) = config.get_notification_email() {
       if let Err(error) = send_email_notification(

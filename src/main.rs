@@ -1,6 +1,4 @@
 use std::env;
-/*mod local_config;
-use local_config::ConfigFile;*/
 use certexpchecker::run;
 use std::process;
 
