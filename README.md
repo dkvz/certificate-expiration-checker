@@ -1,4 +1,6 @@
 # Certificate Expiration Checker
+Linux binaries are available in the [Releases section on Github](https://github.com/dkvz/certificate-expiration-checker/releases).
+
 I don't know how to Rust. Many parts of this project could be improved.
 It works for my baseline requirements.
 
