@@ -9,6 +9,11 @@ extern crate x509_parser;
 use x509_parser::pem::Pem;
 use x509_parser::error::PEMError;
 
+// Constants I use to find the private key sections
+// in certificates:
+const PRIV_KEY_START: &[u8;27] = b"-----BEGIN PRIVATE KEY-----";
+const PRIV_KEY_END: &[u8;25] = b"-----END PRIVATE KEY-----";
+
 #[derive(Debug)]
 pub enum CertReadError {
   IOError(io::Error),
@@ -40,13 +45,26 @@ impl Display for CertReadError {
 }
 
 pub fn get_certificate_expiry_date(filename: &str) -> Result<i64, CertReadError> {
-  let bytes = read_bytes_from_file(filename)?;
-  // Now decode the cert.
+  let mut bytes = read_bytes_from_file(filename)?;
+  // First look for a possible PRIVATE KEY section as the
+  // x509 parser won't work if that section is the first
+  // in the file.
+  // There's currently no way to put two if let on the same line.
+  if let Some(priv_key_start_pos) = find_subsequence(&bytes.as_slice(), PRIV_KEY_START) {
+    if let Some(priv_key_end_pos) = find_subsequence(&bytes.as_slice(), PRIV_KEY_END) {
+      if priv_key_start_pos < priv_key_end_pos {
+        bytes = [
+          &bytes[0 .. priv_key_start_pos], 
+          &bytes[priv_key_end_pos + PRIV_KEY_END.len() .. bytes.len()]
+        ].concat();
+      }
+    }
+  }
 
+  // Now decode the cert.
   // Do we use this "res" value?
   // -> No I don't think it does anything.
   //let res = pem_to_der(&bytes);
-
   let reader = Cursor::new(bytes);
   let (pem, _bytes_read) = Pem::read(reader)?;
   // To mix things up let's not use the From trait for this one:
@@ -63,4 +81,11 @@ fn read_bytes_from_file(filename: &str) -> Result<Vec<u8>, io::Error> {
   let mut buffer = Vec::new();
   f.read_to_end(&mut buffer)?;
   Ok(buffer)
+}
+
+// Stole this from here: 
+// https://stackoverflow.com/questions/35901547/how-can-i-find-a-subsequence-in-a-u8-slice
+// The idea is to look for a private key part in the file and remove it from the byte array.
+fn find_subsequence(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+  haystack.windows(needle.len()).position(|window| window == needle)
 }
