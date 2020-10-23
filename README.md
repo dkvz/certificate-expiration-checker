@@ -47,8 +47,9 @@ I tried to avoid it but it looks like the email crate requires the dev files for
 
 Managed to compile the release build (`cargo build --release`) on an Ubuntu based distrib but had to install these first:
 ```
-apt install libc-dev gcc-multilib libssl-dev
+apt install libc-dev gcc-multilib libssl-dev pkg-config
 ```
+The `pkg-config` package is only really required for older Debian-based Linux versions (< Debian 9).
 
 Once the target is compiled you probably want to manually strip the debug symbols:
 ```
