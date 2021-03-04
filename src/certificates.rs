@@ -11,8 +11,11 @@ use x509_parser::error::PEMError;
 
 // Constants I use to find the private key sections
 // in certificates:
-const PRIV_KEY_START: &[u8;27] = b"-----BEGIN PRIVATE KEY-----";
-const PRIV_KEY_END: &[u8;25] = b"-----END PRIVATE KEY-----";
+type PrivateKeyDelimiter = (&'static[u8], &'static[u8]);
+const PRIV_KEY_SEQUENCES: [PrivateKeyDelimiter; 2] = [
+  (b"-----BEGIN PRIVATE KEY-----", b"-----END PRIVATE KEY-----"),
+  (b"-----BEGIN RSA PRIVATE KEY-----", b"-----END RSA PRIVATE KEY-----")
+];
 
 #[derive(Debug)]
 pub enum CertReadError {
@@ -50,13 +53,16 @@ pub fn get_certificate_expiry_date(filename: &str) -> Result<i64, CertReadError>
   // x509 parser won't work if that section is the first
   // in the file.
   // There's currently no way to put two if let on the same line.
-  if let Some(priv_key_start_pos) = find_subsequence(&bytes.as_slice(), PRIV_KEY_START) {
-    if let Some(priv_key_end_pos) = find_subsequence(&bytes.as_slice(), PRIV_KEY_END) {
-      if priv_key_start_pos < priv_key_end_pos {
-        bytes = [
-          &bytes[0 .. priv_key_start_pos], 
-          &bytes[priv_key_end_pos + PRIV_KEY_END.len() .. bytes.len()]
-        ].concat();
+  for (begin_seq, end_seq) in PRIV_KEY_SEQUENCES.iter() {
+    if let Some(priv_key_start_pos) = find_subsequence(&bytes.as_slice(), begin_seq) {
+      if let Some(priv_key_end_pos) = find_subsequence(&bytes.as_slice(), end_seq) {
+        if priv_key_start_pos < priv_key_end_pos {
+          bytes = [
+            &bytes[0 .. priv_key_start_pos], 
+            &bytes[priv_key_end_pos + end_seq.len() .. bytes.len()]
+          ].concat();
+          break;
+        }
       }
     }
   }

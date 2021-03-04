@@ -56,6 +56,13 @@ fn can_read_fixture_starting_with_private_key() {
 }
 
 #[test]
+fn can_read_fixture_starting_with_private_key_rsa_delimiter() {
+  let not_after: i64 = get_certificate_expiry_date("tests/fixtures/ex_cert_full_rsa_delimiter.pem")
+    .expect("Got an error reading the certificate");
+  assert_eq!(1603276162, not_after);
+}
+
+#[test]
 fn error_when_file_only_contains_private_key() {
   if let Err(cert_error) = get_certificate_expiry_date("tests/fixtures/ex_cert_key.pem") {
     match cert_error {
