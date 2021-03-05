@@ -45,6 +45,8 @@ You can now schedule the `certexpchecker` executable to run against that config 
 ## Building on Linux
 I tried to avoid it but it looks like the email crate requires the dev files for OpenSSL. Oh well...
 
+**Compiling on Manjaro to target Debian 10 is a bad idea (libc version differences) - Compile on Debian 10**.
+
 Managed to compile the release build (`cargo build --release`) on an Ubuntu based distrib but had to install these first:
 ```
 apt install libc-dev gcc-multilib libssl-dev pkg-config
