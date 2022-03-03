@@ -70,7 +70,7 @@ Provide a config file with:
 
 Config file can be given using the "-f" argument, or the program looks for a default config file in current directory.
 
-Either run the executable in one shot (invoked through something like cron) or daemon mode. That's it.
+For the moment the executable should be ran using cron or equivalent.
 
 ## Structure
 I think people write a lib.rs file to centralize everything to be used by main.rs. Gotta check actual projects to see how they distribute code into modules and files.
@@ -108,6 +108,7 @@ echo | openssl s_client -servername expired.badssl.com -connect expired.badssl.c
 ```
 
 # TODO
+- [ ] Add an option for a daemon mode.
 - [x] Add a version string somewhere and a version arg, I'm noticing I don't know what version of the app I have on which server.
 - [x] Add an extra option to not send email. It's annoying to have to fiddle with the config file.
 - [x] My way of processing command line args is horrible, I could pop the args I already found from the vector or better yet just browse the whole list once and set a list of flags, struct or something.
