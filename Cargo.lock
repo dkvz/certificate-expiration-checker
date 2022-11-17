@@ -143,7 +143,7 @@ checksum = "76a284da2e6fe2092f2353e51713435363112dfd60030e22add80be333fb928f"
 
 [[package]]
 name = "certexpchecker"
-version = "1.2.0"
+version = "1.2.1"
 dependencies = [
  "chrono",
  "colored",
