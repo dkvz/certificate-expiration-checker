@@ -12,7 +12,7 @@ panic = 'abort'
 
 [dependencies]
 getopts = "0.2"
-config = "0.10.1"
+config = "0.13.2"
 x509-parser = "0.6.5"
 chrono = "0.4"
 colored = "1.9"

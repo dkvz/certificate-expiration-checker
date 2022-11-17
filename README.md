@@ -43,6 +43,8 @@ You can now schedule the `certexpchecker` executable to run against that config 
 **TODO**
 
 ## Building on Linux
+**Requires `rustc` version 1.65+**.
+
 I tried to avoid it but it looks like the email crate requires the dev files for OpenSSL. Oh well...
 
 **Compiling on Manjaro to target Debian 10 is a bad idea (libc version differences) - Compile on Debian 10**.
