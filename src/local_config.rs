@@ -1,6 +1,7 @@
 use std::error::Error;
 extern crate config;
 use config::*;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 // We should create instances with a
 // "from" method that can return a
@@ -14,6 +15,8 @@ pub struct ConfigFile {
     from_email: String,
     certificates: Vec<String>,
     alert_min_days: u32,
+    // Can use format "127.0.0.1:25"
+    smtp_host: SocketAddr,
 }
 
 impl ConfigFile {
@@ -61,11 +64,22 @@ impl ConfigFile {
             Err(_) => 30,
         };
 
+        let smtp_host: SocketAddr = conf.get_string("smtp_host")
+            .ok()
+            .and_then(|s| s.parse::<SocketAddr>().ok())
+            .unwrap_or(
+                SocketAddr::new(
+                    IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 
+                    25
+                )
+            );
+
         Ok(ConfigFile {
             notification_email: email,
-            from_email: from_email,
+            from_email,
             certificates: certs,
             alert_min_days: min_days,
+            smtp_host
         })
     }
 
@@ -83,6 +97,10 @@ impl ConfigFile {
 
     pub fn get_alert_min_days(&self) -> &u32 {
         &self.alert_min_days
+    }
+
+    pub fn get_smtp_host(&self) -> &SocketAddr {
+        &self.smtp_host
     }
 
     pub fn get_max_timestamp(&self, now: i64) -> i64 {

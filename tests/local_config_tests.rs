@@ -1,5 +1,6 @@
 #[path = "../src/local_config.rs"] mod local_config;
 use local_config::*;
+use std::net::{SocketAddr, Ipv4Addr, IpAddr};
 
 #[test]
 fn error_when_file_does_not_exist() {
@@ -71,6 +72,20 @@ fn from_email_has_default_value() {
   match ConfigFile::from("tests/fixtures/empty.toml") {
     Ok(config) => {
       assert_eq!(config.get_from_email(), "nobody@localhost");
+    },
+    Err(e) => panic!("Error reading fixture file: {}", e)
+  }
+}
+
+#[test]
+fn smtp_host_has_default_value() {
+  let default_smtp_host = SocketAddr::new(
+    IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 
+    25
+  );
+  match ConfigFile::from("tests/fixtures/empty.toml") {
+    Ok(config) => {
+      assert_eq!(config.get_smtp_host(), &default_smtp_host);
     },
     Err(e) => panic!("Error reading fixture file: {}", e)
   }
