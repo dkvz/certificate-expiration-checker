@@ -9,6 +9,7 @@ Prepare a toml config file such as:
 ```js
 notification_email = "some_email@email.org"
 from_email = "certalert@my-machine.local"
+smtp_host = "127.0.0.1:25"
 
 certificates = [
   "/etc/ssl/certs/snakeoil.pem",
@@ -19,7 +20,9 @@ And provide it to the executable using the "-f" flag.
 
 The certificates have to hold a single public key. It will also work when multiple certificates are in a single file, but **only the first one will be checked for validity**.
 
-For the moment we only send notifications through SMTP using localhost unencrypted and unauthenticated standard port 25. To disable notifications just omit the "notification_email" param in your config file.
+By default, notifications are sent by email through SMTP using localhost unencrypted and unauthenticated standard port 25. To disable notifications just omit the "notification_email" param in your config file.
+
+The optional `smtp_host` config option makes it possible to use another SMTP server (also unauthenticated) in the form `<IP_ADDRESS>:<PORT>`.
 
 To check if notifications are working, make sure you have a valid email address in the `notification_email` field of the config file then run the following test command:
 ```
