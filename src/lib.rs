@@ -211,7 +211,7 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
     if opt_matches.opt_present("t") {
         if let Some(dest_email) = config.get_notification_email() {
             println!("Sending test email...");
-            match send_test_email(config.get_from_email(), dest_email) {
+            match send_test_email(config.get_from_email(), dest_email, config.get_smtp_host()) {
                 Ok(_) => {
                     println!("Test email sent successfully.");
                     return Ok(0);
@@ -262,7 +262,12 @@ pub fn run(args: Vec<String>) -> Result<i32, String> {
         // Check if we have a notification email set:
         if let Some(dest_email) = config.get_notification_email() {
             if let Err(error) =
-                send_email_notification(config.get_from_email(), dest_email, &alert_certs)
+                send_email_notification(
+                    config.get_from_email(), 
+                    dest_email, 
+                    config.get_smtp_host(),
+                    &alert_certs
+                )
             {
                 return Err(format!("Error sending the notification email: {}", error));
             }

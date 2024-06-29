@@ -1,12 +1,15 @@
-use std::error::Error;
+use std::{error::Error, net::SocketAddr};
 use crate::{ProcessedCert};
 extern crate lettre;
 extern crate lettre_email;
 use lettre_email::{Email, Mailbox};
-use lettre::{Transport, SmtpClient};
+use lettre::{Transport, SmtpClient, ClientSecurity};
 
 pub fn send_email_notification(
-  from: &String, dest: &String, certs: &Vec<ProcessedCert>
+  from: &String, 
+  dest: &String, 
+  smtp_host: &SocketAddr,
+  certs: &Vec<ProcessedCert>
 ) -> Result<(), Box<dyn Error>> {
   let mut content = String::from("Some certificates approach expiration or are expired:\r\n---\r\n");
   let more_content = certs
@@ -32,23 +35,26 @@ pub fn send_email_notification(
   mailer.send(email.into())?;
   Ok(())*/
 
-  send_email(email)
+  send_email(email, smtp_host)
 }
 
 pub fn send_test_email(
-  from: &String, dest: &String
+  from: &String, 
+  dest: &String,
+  smtp_host: &SocketAddr
 ) -> Result<(), Box<dyn Error>> {
   let email = build_email(
     from,
     dest,
     &String::from("Test email from the certificate expiration alert process")
   )?;
-  send_email(email)
+  send_email(email, smtp_host)
 }
 
-fn send_email(email: Email) -> Result<(), Box<dyn Error>> {
-  let mut mailer =
-      SmtpClient::new_unencrypted_localhost()?.transport();
+fn send_email(email: Email, smtp_host: &SocketAddr) -> Result<(), Box<dyn Error>> {
+  //let mut mailer = SmtpClient::new_unencrypted_localhost()?.transport();
+  let mut mailer = SmtpClient::new(smtp_host, ClientSecurity::None)?
+    .transport();
   // Send the email
   mailer.send(email.into())?;
     
